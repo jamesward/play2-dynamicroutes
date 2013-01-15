@@ -14,12 +14,12 @@ object Global extends GlobalSettings {
         // there might be a cleaner way to do this with Scala Reflection
         try {
           val controllerClass = Global.getClass.getClassLoader.loadClass("controllers.resources." + resourceName)
-          val methodInvocation = MethodUtils.getAccessibleMethod(controllerClass, "index").invoke(this)
+          val methodInvocation = MethodUtils.getAccessibleMethod(controllerClass, "index").invoke(null)
           Some(methodInvocation.asInstanceOf[Handler])
         }
         catch {
           // otherwise, error
-          case _ => Some(Action { request =>
+          case _: Throwable => Some(Action { request =>
             Results.NotFound("The resource for " + path + " could not be found")
           })
         }
